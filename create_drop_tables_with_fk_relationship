@@ -1,0 +1,107 @@
+--day1
+--table creation and dropping
+
+use htt224_3;
+go
+
+
+if OBJECT_ID('dbo.student', 'U') is null
+begin
+create table student(
+student_id int identity(1, 1) primary key,
+name nvarchar(50) not null,
+surname nvarchar(100) not null
+);
+end;
+
+go
+if OBJECT_ID('dbo.professor', 'U') is null
+begin
+create table professor
+(
+professor_id int identity(1, 1) primary key, 
+name nvarchar(50) not null, 
+surname nvarchar(100) not null
+);
+end;
+
+
+go
+
+
+if OBJECT_ID('dbo.subj', 'U') is null
+begin
+create table subj 
+(
+ subj_id int identity(1, 1) primary key,
+ subj_name nvarchar(100) not null, 
+ prof_id int not null,
+ constraint fk_subj_prof foreign key (prof_id)
+ references professor(professor_id)
+);
+end;
+
+
+
+GO
+if OBJECT_ID('dbo.grade', 'U')is null
+begin
+create table grade
+(
+ grade_id int identity(1, 1) primary key, 
+ student_id int not null,
+ subject_id int not null,
+ score smallint  check(score >= 0 and score <= 100)not null,
+ constraint fk_student_id foreign key (student_id)
+ references student(student_id),
+ constraint fk_subject_id foreign key (subject_id)
+ references subj(subj_id)
+   --CONSTRAINT fk_subject_id FOREIGN KEY (subject_id)
+       --     REFERENCES dbo.subj(subj_id)
+);
+end;
+
+go
+
+--delete(drop table)
+
+ALTER TABLE dbo.Grade
+DROP CONSTRAINT fk_student_id;
+
+if OBJECT_ID('dbo.student', 'U') is not null
+begin
+drop table student;
+end;
+
+
+--alter table 
+--drop constraint fk_
+if OBJECT_ID('dbo.grade', 'U') is not null
+begin
+drop table dbo.grade;
+end;
+
+
+
+
+--check foreign key
+SELECT name 
+FROM sys.foreign_keys
+WHERE parent_object_id = OBJECT_ID('dbo.grade');
+
+
+alter table subj
+drop constraint fk_subj_prof;
+
+if OBJECT_ID('dbo.professor', 'U') is not null
+begin
+drop table dbo.professor;
+end;
+
+
+
+
+if OBJECT_ID('dbo.subj', 'U') is not null
+begin 
+drop table dbo.subj;
+end;
