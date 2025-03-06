@@ -9,6 +9,8 @@ Internet Connection: Needed to download installation files.
 
 
 Installation Steps
+
+
 1. Install SQL Server Developer Edition
 Download: Visit the Microsoft SQL Server Downloads page and select the Developer edition.
 Run the Installer: Launch the downloaded installer (.exe file).
@@ -17,6 +19,7 @@ Authentication Mode:
 Windows Authentication: Recommended for local development.
 Mixed Mode: Use if SQL Server Authentication is required (you will be prompted to set a password for the sa account).
 Complete the Setup: Follow the installation wizard and restart your computer if prompted.
+
 2. Install SQL Server Management Studio (SSMS)
 Download: Go to the SSMS Download Page and download the latest version.
 Run the Installer: Launch the installer and follow the prompts.
@@ -27,8 +30,13 @@ For a default instance, use (local), localhost, or ..
 For a named instance (e.g., SQLEXPRESS), use YourComputerName\SQLEXPRESS.
 Authentication: Choose Windows Authentication (or SQL Server Authentication if configured).
 Verify Installation: Check the Object Explorer for system databases (master, model, msdb, tempdb).
+
+
 Usage
+
+
 This setup is intended for development and testing. With SSMS, you can:
+
 
 Create and manage databases.
 Write and execute T-SQL queries.
@@ -131,4 +139,5 @@ Syntax errors or omissions in the CREATE TABLE statement.
 Schema mismatches (e.g., using subj instead of dbo.subj).
 Incomplete execution of the script.
 Data Consistency: Proper foreign key constraints help prevent orphan records and maintain database consistency.
-This guide provides a comprehensive overview for setting up SQL Server and SSMS for development, addressing common challenges in table creation and deletion, and ensuring referential integrity through proper foreign key management.
+
+
