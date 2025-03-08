@@ -1,0 +1,53 @@
+Database Creation with Error Checks:
+  
+The script starts by checking if the edu database exists using DB_ID('edu').
+If it doesn''t exist, it creates the database; 
+otherwise, it prints a message. This is useful for avoiding errors when re-running your script.
+
+
+IF DB_ID('edu') IS NULL
+BEGIN
+    CREATE DATABASE edu;
+END
+ELSE
+BEGIN
+    PRINT 'Database already exists.';
+END;
+GO
+
+  
+Using USE and Batch Separators (GO):
+The USE edu; statement switches the context to the newly created (or existing) database.
+  Batch separators (GO) are used to signal the end of a batch, which is important for commands like CREATE DATABASE that need to be run in their own batch.
+
+Conditional Table Creation:
+  
+Each table is created only if it doesn't already exist. 
+  This is done with OBJECT_ID('dbo.tableName', 'U') IS NULL, which prevents errors when running the script multiple times.
+
+Constraints and Constraint Naming:
+
+Primary Keys: Every table has a primary key (e.g., subj_id, uni_id).
+Check Constraints: Used to enforce data integrity (e.g., ensuring the semester is between 0 and 8).
+
+semester SMALLINT CONSTRAINT ch_semester CHECK (semester >= 0 AND semester <= 8)
+  
+Default Constraints: Provide default values (e.g., rate defaults to 100).
+  
+Foreign Key Constraints: Ensure referential integrity by linking tables.
+  
+Naming constraints explicitly (e.g., fk_group_uni_id) is a best practice, as it makes maintenance easier and avoids conflicts.
+  
+Composite Primary Keys in Junction Tables:
+The subjLect table is a junction table that models a many-to-many relationship between subjects and lecturers.
+  It uses a composite primary key (combining subj_id and lecturer_id) to ensure each pairing is unique.
+
+
+CONSTRAINT pk_subjLect PRIMARY KEY (subj_id, lecturer_id)
+  
+Cascading Actions:
+In some foreign keys, cascading actions (like ON DELETE CASCADE) are used to automatically delete related records in child tables when a parent record is deleted. 
+  However, caution is needed to avoid multiple cascade paths, which SQL Server disallows.
+
+IF/ELSE Blocks: Used for conditional logic (e.g., checking if a database or table exists before creation).
+Print Statements: PRINT is used to output messages in SQL Server for debugging or informational purposes.
