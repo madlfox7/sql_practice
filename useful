@@ -1,0 +1,103 @@
+SELECT name FROM master.sys.databases; -- shows all db's on master 
+--USE another_db; --switch to other bd
+SELECT db_name(); --shows current bd
+CREATE DATABASE my_new_db;
+if DB_ID('my_new_db') is not null
+begin
+DROP DATABASE my_new_db;
+end
+else
+begin
+print('no db named my_new_db')
+end;
+
+
+if OBJECT_ID('dbo.my_simple_table', 'U') is null
+begin
+CREATE TABLE my_simple_table (
+ id INTEGER,
+ country VARCHAR(2),
+ name VARCHAR(15)
+);
+end;
+
+INSERT INTO my_simple_table (id, country, name)
+VALUES (1, 'US', 'Sam');
+
+
+INSERT INTO my_simple_table
+ (id, country, name)
+VALUES (2, 'US', 'Selena'),
+ (3, 'CA', 'Shawn'),
+ (4, 'US', 'Sutton');
+
+
+ SELECT table_name
+FROM information_schema.tables; --show all tables in current db
+
+
+--country VARCHAR(2) CHECK
+ --(country IN ('CA', 'US'))
+
+ --check as named constraint 
+ --CONSTRAINT chk_id_country
+ --CHECK (id > 100 AND country IN ('CA','US'))
+
+
+ --id INTEGER PRIMARY KEY idnetity(1, 1)
+ --CONSTRAINT pk_id_name
+ --PRIMARY KEY (id, name)
+
+
+ -- constraint fk_field_from_this_table FOREIGN KEY (field_from_this_table)
+-- REFERENCES other_table(ref_field)
+
+
+--db rename
+USE master;
+GO
+ALTER DATABASE new MODIFY NAME = edu;
+
+
+--table rename
+EXEC sp_rename
+'old_table_name',
+'new_table_name';
+
+
+--column rename
+EXEC sp_rename 'my_table.old_column_name',
+ 'new_column_name', 'COLUMN';
+
+
+ --delete column
+ ALTER TABLE my_table
+ DROP COLUMN new_num_column,
+ new_text_column;
+
+
+-- Перечислить ограничения (кроме тех, которые
+заданы по умолчанию)
+SELECT table_name,
+ constraint_name,
+ constraint_type
+FROM information_schema.table_constraints
+WHERE table_name = 'my_table';
+-- Список всех ограничений по умолчанию
+SELECT OBJECT_NAME(parent_object_id),
+ COL_NAME(parent_object_id,
+ parent_column_id),
+ definition
+FROM sys.default_constraints
+WHERE OBJECT_NAME(parent_object_id) =
+ 'my_table';
+
+
+ 
+ --add constraint
+ ADD CONSTRAINT chk_lower_name
+ CHECK (lower_name = LOWER(name));
+
+ --drop constraint
+ ALTER TABLE my_table
+ DROP CONSTRAINT chk_lower_name;
