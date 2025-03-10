@@ -26,3 +26,7 @@ Error Message	Cause	Solution
 Cannot drop database because it is currently in use.	Active connections exist.	Use ALTER DATABASE edu SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 Cannot drop database because there are open transactions.	Uncommitted transactions.	Force rollback with WITH ROLLBACK IMMEDIATE.
 Cannot drop database because it does not exist.	Database was already removed or misspelled.	Use IF DB_ID('edu') IS NOT NULL before dropping.
+
+Dropping a database permanently deletes all data inside it.
+Ensure you back up important data before running DROP DATABASE.
+You cannot rollback a dropped database unless you have a backup.
