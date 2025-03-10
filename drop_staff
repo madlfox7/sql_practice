@@ -1,0 +1,30 @@
+
+-- syntax: ALTER TABLE ReferencingTable DROP CONSTRAINT ForeignKeyName;
+--drop constraint with error check(silly way;D)
+
+  
+if (OBJECT_ID('dbo.exam', 'U') is not null and OBJECT_ID('fk_subj_id', 'F') IS NOT NULL and
+OBJECT_ID('fk_lecturer_id', 'F') IS NOT NULL  and OBJECT_ID('fk_student_id', 'F') IS NOT NULL)
+begin
+    ALTER TABLE YourTable DROP CONSTRAINT fk_subj_id;
+alter table dbo.exam 
+drop constraint fk_student_id, fk_subj_id, fk_lecturer_id;
+end;
+
+
+--show all foreign_keys
+select * from sys.foreign_keys;
+--where name like 'fk%';
+
+
+--how to cleanup all constraints of the table? todo
+ --how to delete all tables in db? todo
+
+
+  --drop table after all constraints are cleaned up
+ if (OBJECT_ID('dbo.exam', 'U') is not null)
+ begin
+ drop table dbo.exam
+ end;
+
+
