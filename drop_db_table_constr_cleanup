@@ -19,3 +19,10 @@ ALTER DATABASE edu SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 Forces all connections to close.
 Rolls back any open transactions.
 DROP DATABASE edu;
+
+
+Common Errors & Fixes
+Error Message	Cause	Solution
+Cannot drop database because it is currently in use.	Active connections exist.	Use ALTER DATABASE edu SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+Cannot drop database because there are open transactions.	Uncommitted transactions.	Force rollback with WITH ROLLBACK IMMEDIATE.
+Cannot drop database because it does not exist.	Database was already removed or misspelled.	Use IF DB_ID('edu') IS NOT NULL before dropping.
