@@ -128,12 +128,3 @@ select * from sys.foreign_keys
 where name like 'fk%';
 
 
-
---drop db
-USE master;
-GO
-ALTER DATABASE edu SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-GO
-DROP DATABASE edu;
-GO
-
