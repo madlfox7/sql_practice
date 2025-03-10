@@ -1,0 +1,41 @@
+DECLARE @sql NVARCHAR(MAX);
+
+WHILE EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name LIKE 'FK%')
+BEGIN
+    SELECT TOP 1 @sql = 
+        'ALTER TABLE ' + OBJECT_NAME(parent_object_id) + 
+        ' DROP CONSTRAINT ' + name
+    FROM sys.foreign_keys 
+    WHERE name LIKE 'FK%';
+    EXEC sp_executesql @sql;
+END;
+
+----------------------------------------------------------------------------------------------------------------------------
+Drop All Foreign Key Constraints in SQL Server
+
+This script dynamically removes all foreign key (FK) constraints from tables in a SQL Server database. It iterates through all foreign key constraints and drops them one by one using ALTER TABLE ... DROP CONSTRAINT.
+The script follows these steps:
+
+Checks if there are any foreign keys in the database.
+Finds the first foreign key constraint and the corresponding table.
+Generates a dynamic SQL statement to drop the foreign key.
+Executes the SQL statement to remove the constraint.
+Repeats the process until all foreign keys are removed.
+
+
+Automates FK constraint removal (no manual DROP CONSTRAINT needed) and works dynamically (no need to list table names manually). it's  safe to run multiple times (won't cause errors if all FKs are already removed).
+
+Compatibility
+
+Works on SQL Server 2012, 2014, 2016, 2017, 2019, and later.
+
+Notes & Limitations
+
+❗ This script only removes foreign keys. It does not remove CHECK, PRIMARY KEY, or UNIQUE constraints.
+❗ If you need to remove all constraints, an extended version can be used.
+
+Future Improvements
+
+Add an option to remove all constraints (including CHECK, UNIQUE, and PRIMARY KEY).
+
+Log removed constraints for tracking changes.
