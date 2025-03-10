@@ -121,3 +121,9 @@ GO
 -- Drop the database
 DROP DATABASE edu;
 GO
+
+
+--show all foreign_keys
+select * from sys.foreign_keys
+where name like 'fk%';
+
