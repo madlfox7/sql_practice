@@ -1,0 +1,191 @@
+https://www.geeksforgeeks.org/sql-query-to-add-unique-key-constraints-using-alter-command/
+https://www.w3schools.com/SQl/sql_alter.asp
+
+
+if DB_ID('edu') is null
+begin
+create database edu;
+end;
+go
+use edu;
+go
+
+if OBJECT_ID('dbo.subj', 'U') is null
+begin
+create table subj
+(
+ subj_id int primary key identity(1, 1), 
+ subj_name nvarchar(25),
+ semester smallint constraint ch_semester check(semester >= 0 and semester <= 8),
+ subj_hours smallint constraint ch_subj_hours check(subj_hours > 0)
+);
+end;
+
+go
+if OBJECT_ID('dbo.Uni', 'U') is null
+begin
+create table Uni
+(
+uni_id int primary key identity(1, 1),
+uni_name nvarchar(50) not null, 
+rate int constraint def_rate default 100,
+phone varchar(20) not null,
+
+--phone VARCHAR(20) NOT NULL CONSTRAINT ch_phone_format CHECK (LEN(phone) = 11 AND LEFT(phone, 4) = '+374')--from country code of Arm or from 0
+--CHECK ((LEFT(phone, 4) = '+374' AND LEN(phone) = 11) OR (LEFT(phone, 1) = '0' AND LEN(phone) = 10))  --combined check
+--phone varchar(20) constraint ch_phone check(len(phone) = 11) not null, --length check
+--phone varchar(20) constraint ch_phone check(left(phone, 4) = '+374') not null, --local uni
+--phone varchar(20) constraint ch_phone check(phone like '+[3][7][4]%') not null,
+
+email varchar(50),
+yearOfCreate date --constraint chk_year check(yearOfCreate < '01012022') --!!!!!getdate() but not in check, easy way, first way will not work too...
+);
+end;
+
+go
+if OBJECT_ID('dbo.groupp', 'U') is null
+begin 
+create table groupp
+(
+group_name int primary key identity(1, 1),
+headname nvarchar(100),
+group_uni_id int not null, 
+constraint fk_group_uni_id foreign key (group_uni_id) references dbo.uni(uni_id) 
+on delete cascade
+--on update cascade
+);
+end;
+
+if OBJECT_ID('dbo.student', 'U') is null
+begin
+create table student
+(
+stud_id int primary key identity(1, 1),
+name nvarchar(25),
+surname nvarchar(50), 
+bd date, --how to datediff?
+course smallint constraint ch_course check(course between 0 and 5),
+addr nvarchar(100),
+student_ssn nvarchar constraint ch_student_ssn check(len(student_ssn) = 10) unique, --???
+phone varchar(20),
+email varchar(50),
+group_id int not null, --???
+constraint fk_group_id foreign key (group_id) references dbo.groupp(group_name)
+on delete cascade
+--on update cascade
+);
+end;
+
+go
+if OBJECT_ID('dbo.lecturer', 'U') is null
+begin
+create table lecturer 
+(
+lecturer_id int primary key identity(1, 1),
+lecturer_name nvarchar(25),
+surname nvarchar(50),
+bd date, --or just year ? 
+addr nvarchar(100),
+ssn  varchar constraint ch_ssn check(len(ssn) = 10) unique,
+phone varchar(20),
+email varchar(50),
+uni_id int,
+constraint fk_uni_id foreign key (uni_id) references dbo.uni(uni_id)
+on delete cascade 
+on update cascade
+);
+end;
+
+go
+if OBJECT_ID('dbo.exam', 'U') is null
+begin
+create table exam
+(
+exam_date date,
+student_id int, --not null, 
+subject_id int ,--not null,
+lecturer_id int, --not null ,
+exam_mark smallint constraint ch_exam_mark check(exam_mark between 0 and 10)
+constraint fk_student_id foreign key (student_id) references dbo.student(stud_id),
+--on delete cascade ,
+--on update cascade,
+constraint fk_subject_id foreign key (subject_id) references dbo.subj(subj_id),
+--on delete cascade ,
+--on update cascade,
+constraint fk_lecturer_id foreign key (lecturer_id) references dbo.lecturer(lecturer_id)
+--on delete cascade 
+--on update cascade
+);
+end;
+
+go
+if OBJECT_ID('dbo.subjLect', 'U') is null
+begin
+CREATE TABLE subjLect
+(
+    subj_id INT NOT NULL,
+    lecturer_id INT NOT NULL,
+   CONSTRAINT pk_subjLect PRIMARY KEY (subj_id, lecturer_id),
+    CONSTRAINT fk_subjLect_subj FOREIGN KEY (subj_id) REFERENCES subj(subj_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_subjLect_lecturer FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id)
+        ON DELETE CASCADE
+);
+end;
+
+
+--add drop constraints and drop table 
+
+
+alter table student 
+add city nvarchar(30) default 'Yerevan'
+
+
+
+
+
+alter table student
+drop constraint  DF__student__city__276EDEB3
+
+
+alter table student
+drop column city
+
+select * from dbo.student
+
+
+
+--alter column type
+alter table student
+drop constraint ch_course
+
+
+alter table student
+alter column course tinyint 
+
+
+
+
+student_ssn nvarchar constraint ch_student_ssn check(len(student_ssn) = 10) unique, --???
+
+
+--
+if OBJECT_ID('dbo.subj', 'U') is null
+begin
+create table subj
+(
+ subj_id int primary key identity(1, 1), 
+ subj_name nvarchar(25),
+ semester smallint constraint ch_semester check(semester >= 0 and semester <= 8),
+ subj_hours smallint constraint ch_subj_hours check(subj_hours > 0)
+);
+end;
+
+
+----??????
+alter table dbo.subj
+alter column subj_name nvarchar(30)	--unique ???
+
+
+alter table dbo.subj
+add unique (subj_name)--unique ???
