@@ -1,7 +1,3 @@
-https://www.geeksforgeeks.org/sql-query-to-add-unique-key-constraints-using-alter-command/
-https://www.w3schools.com/SQl/sql_alter.asp
-
-
 if DB_ID('edu') is null
 begin
 create database edu;
@@ -181,11 +177,63 @@ create table subj
 );
 end;
 
-
 ----??????
 alter table dbo.subj
 alter column subj_name nvarchar(30)	--unique ???
 
 
+
 alter table dbo.subj
 add unique (subj_name)--unique ???
+
+
+go
+if OBJECT_ID('dbo.groupp', 'U') is null
+begin 
+create table groupp
+(
+group_name int primary key identity(1, 1),
+headname nvarchar(100),
+group_uni_id int not null, 
+constraint fk_group_uni_id foreign key (group_uni_id) references dbo.uni(uni_id) 
+on delete cascade
+--on update cascade
+);
+end;
+
+
+
+
+
+if OBJECT_ID('dbo.subj', 'U') is null
+begin
+create table subj
+(
+ subj_id int primary key identity(1, 1), 
+ subj_name nvarchar(25),
+ semester smallint constraint ch_semester check(semester >= 0 and semester <= 8),
+ subj_hours smallint constraint ch_subj_hours check(subj_hours > 0)
+);
+end;
+
+
+insert into dbo.subj (subj_name, semester, subj_hours)
+values ('sqllllll', 3, 100),
+('SQ', 1, 100),
+('sql22', 4, 100)
+
+
+select * from  dbo.subj
+
+select subj_name from subj
+where subj_name like 'S__' 
+
+
+
+select subj_name, subj_hours from subj
+where subj_hours between 54 and 99
+
+select subj_name, subj_hours from subj
+where subj_hours >= 54 and subj_hours <= 99
+
+
